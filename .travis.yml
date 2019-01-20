@@ -1,0 +1,28 @@
+sudo: true
+
+services:
+  - docker
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.23.2
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+script:
+  - docker-compose build
+  - docker create --name gem2exe mattipaksula/gem2exe
+  - mkdir releases
+  - docker cp gem2exe:/app/gem2exe releases/gem2exe-linux-amd64-${TRAVIS_TAG}
+  - gzip releases/gem2exe-linux-amd64-${TRAVIS_TAG}
+
+deploy:
+  provider: releases
+  api_key: "GITHUB OAUTH TOKEN"
+  file_glob: true
+  file: releases/*
+  skip_cleanup: true
+  on:
+    tags: true
