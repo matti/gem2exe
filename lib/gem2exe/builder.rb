@@ -1,5 +1,5 @@
 require "tmpdir"
-
+require "fileutils"
 module Gem2exe
   class Builder
     def initialize(path:,entrypoint:,out:,cores:nil,cache_dir:nil)
@@ -11,11 +11,13 @@ module Gem2exe
     end
 
     def build
+      FileUtils.mkdir_p File.dirname(@out)
+
       cmd = [Gem2exe.rubyc_path]
       if Gem2exe.platform == "darwin"
         cmd += ["--openssl-dir", "/usr/local/etc/openssl"]
       else
-        cmd += ["--openssl-dir=", "/etc/ssl"]
+        cmd += ["--openssl-dir", "/etc/ssl"]
       end
       cmd += ["--root", @path]
       cmd += ["-o", @out]

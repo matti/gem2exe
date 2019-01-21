@@ -12,14 +12,12 @@ module Gem2exe
 
       def execute
         Gem2exe.ensure_setup
-
-        entrypoint ||= gem
-        out ||= entrypoint
+        out_with_path = out || entrypoint
 
         unpacker = Unpacker.new gem: gem, version: version
         unpacker.unpack
 
-        builder = Builder.new path: unpacker.path, entrypoint: entrypoint, out: out, cache_dir: cache_dir
+        builder = Builder.new path: unpacker.path, entrypoint: entrypoint, out: out_with_path, cache_dir: cache_dir
         builder.build
       end
     end

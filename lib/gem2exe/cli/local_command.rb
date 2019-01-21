@@ -11,7 +11,7 @@ module Gem2exe
       def execute
         Gem2exe.ensure_setup
 
-        out ||= entrypoint
+        out_with_path = out || entrypoint
 
         path_expanded = if path
           File.expand_path(path)
@@ -19,7 +19,7 @@ module Gem2exe
           Dir.pwd
         end
 
-        builder = Builder.new path: path_expanded, entrypoint: entrypoint, out: out, cache_dir: cache_dir
+        builder = Builder.new path: path_expanded, entrypoint: entrypoint, out: out_with_path, cache_dir: cache_dir
         builder.build
       end
     end

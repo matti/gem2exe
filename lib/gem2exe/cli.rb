@@ -1,4 +1,5 @@
 require 'clamp'
+Clamp.allow_options_after_parameters = true
 
 require_relative "cli/version_command"
 require_relative "cli/setup_command"

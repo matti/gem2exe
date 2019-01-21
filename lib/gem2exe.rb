@@ -16,8 +16,10 @@ module Gem2exe
     end
 
     $stderr.puts "downloading rubyc from #{rubyc_url}"
-    `sh -c "curl -sL #{rubyc_url} | gunzip > #{self.rubyc_path}"`
-    `chmod +x #{self.rubyc_path}`
+
+    Runner.run! "curl -sL #{rubyc_url} | gunzip > #{self.rubyc_path}", shell: true
+    Runner.run! "chmod +x #{self.rubyc_path}"
+
     $stderr.puts "installed in #{self.rubyc_path}"
   end
 
