@@ -14,10 +14,7 @@ module Gem2exe
         Gem2exe.ensure_setup
         out_with_path = out || entrypoint
 
-        unpacker = Unpacker.new gem: gem, version: version
-        unpacker.unpack
-
-        builder = Builder.new path: unpacker.path, entrypoint: entrypoint, out: out_with_path, cache_dir: cache_dir
+        builder = Builder.new gem: gem, version: version, entrypoint: entrypoint, out: out_with_path, cache_dir: cache_dir
         builder.build
       end
     end

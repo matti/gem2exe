@@ -53,5 +53,4 @@ end
 
 require_relative "gem2exe/version"
 require_relative "gem2exe/builder"
-require_relative "gem2exe/unpacker"
 require_relative "gem2exe/runner"

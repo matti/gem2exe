@@ -2,12 +2,17 @@ require "tmpdir"
 require "fileutils"
 module Gem2exe
   class Builder
-    def initialize(path:,entrypoint:,out:,cores:nil,cache_dir:nil)
+    def initialize(path:nil,gem:nil,version:nil,entrypoint:,out:,cores:nil,cache_dir:nil)
+      @gem = gem
+      @version = version
+
       @path = path
+
       @entrypoint = entrypoint
       @out = out
-      @cores = (cores || self.cores+1)
       @tmpdir = (cache_dir || Dir.mktmpdir)
+
+      @cores = (cores || self.cores+1)
     end
 
     def build
@@ -19,7 +24,16 @@ module Gem2exe
       else
         cmd += ["--openssl-dir", "/etc/ssl"]
       end
-      cmd += ["--root", @path]
+
+      if @path
+        cmd += ["--root", @path]
+      elsif @gem
+        cmd += ["--gem", @gem]
+        cmd += ["--gem-version", @version]
+      else
+        raise "path or gem must be given"
+      end
+
       cmd += ["-o", @out]
       cmd += ["-d", @tmpdir]
       cmd += ["--make-args", "-j#{@cores}"]

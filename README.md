@@ -18,4 +18,4 @@ Full options:
 
 ## remote gems
 
-        TODO
+Currently broken in `rubyc` - fetch the source and build it locally.
