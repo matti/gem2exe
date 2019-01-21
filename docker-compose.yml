@@ -2,5 +2,5 @@ version: '3.7'
 
 services:
   gem2exe:
+    image: gem2exe
     build: .
-    image: mattipaksula/gem2exe

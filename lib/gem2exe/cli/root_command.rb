@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "build_command"
-
 module Gem2exe
   module Cli
     class RootCommand < Clamp::Command
@@ -15,7 +13,9 @@ module Gem2exe
       subcommand ["setup"], "setup", SetupCommand
       subcommand ["uninstall"], "uninstall", UninstallCommand
 
-      subcommand ["build"], "build", BuildCommand
+      subcommand ["local"], "local", LocalCommand
+      subcommand ["remote"], "remote", RemoteCommand
+
       subcommand ["version"], "Show version information", VersionCommand
 
       def self.run

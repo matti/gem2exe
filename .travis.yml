@@ -1,26 +1,50 @@
-sudo: true
-
+sudo: required
+cache: bundler
+bundler_args: --without development
 services:
   - docker
 
-env:
-  - DOCKER_COMPOSE_VERSION=1.23.2
+stages:
+  - name: binary
+    if: tag IS present
 
 before_install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
-script:
-  - docker-compose build
-  - docker create --name gem2exe mattipaksula/gem2exe
-  - mkdir releases
-  - docker cp gem2exe:/app/gem2exe releases/gem2exe-linux-amd64-${TRAVIS_TAG}
-  - gzip releases/gem2exe-linux-amd64-${TRAVIS_TAG}
+  - gem update --system
+  - gem --version
+
+jobs:
+  include:
+    - stage: binary
+      script:
+        - mkdir releases
+    - stage: binary
+      os: linux
+      rvm:
+        - "2.6"
+      before_install:
+        - sudo rm /usr/local/bin/docker-compose
+        - curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` > docker-compose
+        - chmod +x docker-compose
+        - sudo mv docker-compose /usr/local/bin
+      script:
+        - docker-compose build
+        - docker create --name gem2exe gem2exe
+        - docker cp gem2exe:/build/gem2exe releases/gem2exe-linux-amd64-${TRAVIS_TAG}
+    - stage: binary
+      rvm:
+        - "2.6"
+      os: osx
+      script:
+        - rake install
+        - gem2exe local --out releases/gem2exe-darwin-amd64-${TRAVIS_TAG}
+    - stage: binary
+      script:
+        - gzip releases/*
+
 
 deploy:
   provider: releases
-  api_key: "GITHUB OAUTH TOKEN"
+  api_key: "TODO"
   file_glob: true
   file: releases/*
   skip_cleanup: true
