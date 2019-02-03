@@ -2,6 +2,10 @@
 
 Uses https://github.com/kontena/ruby-packer/releases
 
+## Install
+
+See https://github.com/matti/gem2exe/releases
+
 ## local gems
 
 Building a local gem:
