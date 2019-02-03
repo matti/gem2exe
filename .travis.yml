@@ -1,8 +1,6 @@
 stages:
   - name: binary
     if: tag IS present
-  - name: docker
-    if: tag IS present
 
 jobs:
   include:
@@ -12,29 +10,15 @@ jobs:
       sudo: required
       services:
         - docker
-
-      before_install:
-        - sudo rm /usr/local/bin/docker-compose
-        - curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` > docker-compose
-        - chmod +x docker-compose
-        - sudo mv docker-compose /usr/local/bin
+      env:
+        secure: "f8sav7sSSjz4cIqN/r1F+OsmAT3MbfVe8cmqaFtF/dERHcsVSTx18SpzU7dstz+NtadcZ2iqsCh/7uvRMsQ5bEsCCeceEYEf5I+kTK3kb0vmCWhlO2l2fY/+19TyjNa5Jtc4PZg7hJ9NmnOs1/MS/VqIpfaBiNIDfuGni4BawTODXElt4yN9pJVTjwLL1C02SPxrv7yJCApdvBMDICV1UyeyUkrsOySeoMDpj7zABoTU+p3Dxe4ykyIoZxU3KQVpTNJnvtg4Cbukf/+cblkWszoqx6x+KAEO3irHIL42+sq3bS6qi9dpbvzhwb94nvJCjbZY5w7r7DC9lMXJfIUlCWWJmNAmMzoYpahBJu3HXjz3pZJEJ0U7qsw/MNqgfbQ5vI5R6TuyY+qAs3FjUkjkwnquUu0es2v71vZQbsCYiI3G9qaPjFJ5d7AD4qA/2HaaT5vewZUGV6W4ZpSSzTU1UbXBYtlq5RJ1EXU1fJvQmRW/qf5GTmaB8NrZo0Wlyjb9zbZweECNlgI8nYectLFYIh8sqtFvs7evOe+qghtpBKAscB0u2pN+RJeIa4PTT7AtHMga3MxG//Mnt+FafcdQOl/W9Ken9OD8H6mPwrOW+PXPNsA4gaSVqMK9kBWBSr0zgyZgTfHY0wRp9jNArSmkxMPx5V4ZIFfO+IjwCyFoU94="
       script:
-        - docker-compose build
-        - docker create --name gem2exe gem2exe
+        - docker login -u mattipaksula -p "$DOCKER_PASSWORD"
         - mkdir releases
+        - docker build -t gem2exe .
+        - docker create --name gem2exe gem2exe
         - docker cp gem2exe:/usr/local/bin/gem2exe releases/gem2exe-linux-amd64-${TRAVIS_TAG}
         - chmod a+x releases/gem2exe-linux-amd64-${TRAVIS_TAG}
-        - gzip releases/*
-
-    - stage: docker
-      os: linux
-      sudo: required
-      services:
-        - docker
-      env:
-        secure: "PdxX+8BaU+/tHYGSyf1XJA4qSLsKsxPeRo69KX7fB6oga6vKHL80jK6SJMIKQL2afZ1jLdg/gFgRreuhfGeIwDYFHVVUcTXJMJnBwrjP780WJdB3XLvHHhIMkU51SYsIPR+qsmVIWxklVSqY4uffnYmuipe1gEg7LyAHlZTS/l750zsdOMG4PEj+FlVGclQkUSpsEMI3HqPi2CQgCU/LUvfyUrC2Ft42AuDdVDSypeQES0nKSFjNrm+T612SIcm5ygIRgXC4OHbN7ilsDVOb+wLMvphpZ9goIpAe4YTiLT5QuWFmYUIE4cqfMrbvMQChOwXkfA7Fsg9ZP2JSr9mFxHxhfxzx3VDvhcvUaH+blUTf86HEQJI1lWXfrPRKgNgX5vrdZbPXP2jSH8L5OnRzsY2RzOqeTDp3VqMuM4hkjL1Y4/K97rOn7KyWiFPOQEi/9Gv4YUyv0adI3fiY5IBnPXUeUx1z/SuTkpd1A/vmrOVLfRkmfCuhCNIyKnkuvkKTQz5ZnB3uSd7vcGRxY1vO/+XtUVbiMZiPoioYaNb+m4NECs6JomsYsWh2RXJHVJxhGeknYtZcb9lL0NZDXK0qTJgoQnxnHXTG4AFM8XHr4yDLYxsGPIGws9AiqVEHAzBK0dPKucysHCxjhCo9GvDQ6bla5xT1wN4nKaYe+UvjdPU="
-      script:
-        - echo "$DOCKER_PASSWORD" | docker login -u mattipaksula --password-stdin
         - docker tag gem2exe mattipaksula/gem2exe:${TRAVIS_TAG}
         - docker push mattipaksula/gem2exe:${TRAVIS_TAG}
 
