@@ -18,4 +18,4 @@ Full options:
 
 ## remote gems
 
-Currently broken in `rubyc` - fetch the source and build it locally.
+        gem2exe remote gemname version command-to-start-gem
