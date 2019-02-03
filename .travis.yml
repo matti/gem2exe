@@ -1,6 +1,8 @@
 stages:
   - name: binary
     if: tag IS present
+  - name: docker
+    if: tag IS present
 
 jobs:
   include:
@@ -23,6 +25,18 @@ jobs:
         - docker cp gem2exe:/usr/local/bin/gem2exe releases/gem2exe-linux-amd64-${TRAVIS_TAG}
         - chmod a+x releases/gem2exe-linux-amd64-${TRAVIS_TAG}
         - gzip releases/*
+
+    - stage: docker
+      os: linux
+      sudo: required
+      services:
+        - docker
+      env:
+        secure: "PdxX+8BaU+/tHYGSyf1XJA4qSLsKsxPeRo69KX7fB6oga6vKHL80jK6SJMIKQL2afZ1jLdg/gFgRreuhfGeIwDYFHVVUcTXJMJnBwrjP780WJdB3XLvHHhIMkU51SYsIPR+qsmVIWxklVSqY4uffnYmuipe1gEg7LyAHlZTS/l750zsdOMG4PEj+FlVGclQkUSpsEMI3HqPi2CQgCU/LUvfyUrC2Ft42AuDdVDSypeQES0nKSFjNrm+T612SIcm5ygIRgXC4OHbN7ilsDVOb+wLMvphpZ9goIpAe4YTiLT5QuWFmYUIE4cqfMrbvMQChOwXkfA7Fsg9ZP2JSr9mFxHxhfxzx3VDvhcvUaH+blUTf86HEQJI1lWXfrPRKgNgX5vrdZbPXP2jSH8L5OnRzsY2RzOqeTDp3VqMuM4hkjL1Y4/K97rOn7KyWiFPOQEi/9Gv4YUyv0adI3fiY5IBnPXUeUx1z/SuTkpd1A/vmrOVLfRkmfCuhCNIyKnkuvkKTQz5ZnB3uSd7vcGRxY1vO/+XtUVbiMZiPoioYaNb+m4NECs6JomsYsWh2RXJHVJxhGeknYtZcb9lL0NZDXK0qTJgoQnxnHXTG4AFM8XHr4yDLYxsGPIGws9AiqVEHAzBK0dPKucysHCxjhCo9GvDQ6bla5xT1wN4nKaYe+UvjdPU="
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u mattipaksula --password-stdin
+        - docker tag gem2exe mattipaksula/gem2exe:${TRAVIS_TAG}
+        - docker push mattipaksula/gem2exe:${TRAVIS_TAG}
 
     - stage: binary
       os: osx
