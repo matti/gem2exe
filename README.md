@@ -23,3 +23,23 @@ Full options:
 ## remote gems
 
         gem2exe remote gemname version command-to-start-gem
+
+## linux and docker
+
+Travis example:
+
+```
+jobs:
+  include:
+    - stage: binary
+      os: linux
+      services:
+        - docker
+
+      before_install:
+        - docker pull mattipaksula/gem2exe
+      script:
+        - mkdir releases
+        - docker run --name gem2exe -it --volume $(pwd):/gem mattipaksula/gem2exe local --path /gem --out /tmp/gbuild gbuild
+        - docker cp gem2exe:/tmp/gbuild releases/gbuild-linux-amd64-${TRAVIS_TAG}
+```
