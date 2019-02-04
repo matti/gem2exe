@@ -26,7 +26,7 @@ module Gem2exe
           }
           $stderr.puts "installing dependencies with apt-get ..."
           Runner.run! "apt-get update", runner_opts
-          Runner.run! "apt-get install -y ruby squashfs-tools build-essential bison curl openssl git-core", runner_opts
+          Runner.run! "apt-get install -y ruby squashfs-tools build-essential bison curl openssl git-core libreadline-dev", runner_opts
           Runner.run! "update-ca-certificates", sudo: sudo?, prepend: {
             stdboth: "  update-ca-certificates: "
           }

@@ -12,7 +12,7 @@ module Gem2exe
     rubyc_url = if self.platform == "darwin"
       "https://github.com/kontena/ruby-packer/releases/download/2.6.0-0.6.0/rubyc-2.6.0-0.6.0-osx-amd64.gz"
     else
-      "https://github.com/kontena/ruby-packer/releases/download/2.6.0-0.6.0/rubyc-2.6.0-0.6.0-linux-amd64.gz"
+      "https://github.com/kontena/ruby-packer/releases/download/0.5.0%2Bextra7/rubyc-0.5.0+extra7-linux-amd64.gz"
     end
 
     $stderr.puts "downloading rubyc from #{rubyc_url}"
